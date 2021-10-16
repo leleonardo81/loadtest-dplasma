@@ -18,7 +18,8 @@
 import uuid
 
 from datetime import datetime
-from locust import HttpLocust, TaskSet, task
+# from locust import HttpLocust, TaskSet, task
+from locust import HttpUser, task, between, TaskSet
 
 
 class MetricsTaskSet(TaskSet):
@@ -38,5 +39,37 @@ class MetricsTaskSet(TaskSet):
             "/metrics", {"deviceid": self._deviceid, "timestamp": datetime.now()})
 
 
-class MetricsLocust(HttpLocust):
-    task_set = MetricsTaskSet
+# class MetricsLocust(HttpLocust):
+#     task_set = MetricsTaskSet
+
+
+class QuickstartUser(HttpUser):
+    # wait_time = between(1, 5)
+    tasks = [MetricsTaskSet]
+
+    @task(1)
+    def login(self):
+        self.client.post(
+            '/login', {"deviceid": self._deviceid})
+
+    @task(999)
+    def post_metrics(self):
+        self.client.post(
+            "/metrics", {"deviceid": self._deviceid, "timestamp": datetime.now()})
+
+    def on_start(self):
+        pass
+
+class MyCustomShape(LoadTestShape):
+    time_limit = 10
+    spawn_rate = 1
+
+    def tick(self):
+        run_time = self.get_run_time()
+
+        if run_time < self.time_limit:
+            # User count rounded to nearest hundred.
+            user_count = round(run_time, -2)
+            return (user_count, spawn_rate)
+
+        return None
