@@ -19,7 +19,7 @@ import uuid
 
 from datetime import datetime
 # from locust import HttpLocust, TaskSet, task
-from locust import HttpUser, task, between, TaskSet
+from locust import HttpUser, task, between, TaskSet, LoadTestShape
 
 
 class MetricsTaskSet(TaskSet):
