@@ -1,12 +1,12 @@
 certifi==2019.3.9
 chardet==3.0.4
-Click==7.0
+click>=7.1.2
 flask>=2.0.0
 gevent>=20.9.0
 greenlet>=0.14.6
 idna==2.8
-itsdangerous==1.1.0
-Jinja2==2.10.1
+itsdangerous>=2.0
+Jinja2>=3.0
 locust==2.4.0
 MarkupSafe==1.1.1
 msgpack>=0.6.2
