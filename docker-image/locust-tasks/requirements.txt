@@ -3,7 +3,7 @@ chardet==3.0.4
 Click==7.0
 flask>=2.0.0
 gevent>=20.9.0
-greenlet==0.4.15
+greenlet>=0.14.6
 idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10.1
