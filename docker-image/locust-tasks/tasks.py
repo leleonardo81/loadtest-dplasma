@@ -43,7 +43,7 @@ class MetricsTaskSet(TaskSet):
 #     task_set = MetricsTaskSet
 
 
-class QuickstartUser(HttpUser):
+class TestUser(HttpUser):
     wait_time = 0
     tasks = [MetricsTaskSet]
 
@@ -60,16 +60,16 @@ class QuickstartUser(HttpUser):
     # def on_start(self):
     #     pass
 
-# class MyCustomShape(LoadTestShape):
-#     time_limit = 60
-#     spawn_rate = 10
+class MyCustomShape(LoadTestShape):
+    time_limit = 60
+    spawn_rate = 10
 
-#     def tick(self):
-#         run_time = self.get_run_time()
+    def tick(self):
+        run_time = self.get_run_time()
 
-#         if run_time < self.time_limit:
-#             # User count rounded to nearest hundred.
-#             user_count = round(run_time, -2)
-#             return (user_count, spawn_rate)
+        if run_time < self.time_limit:
+            # User count rounded to nearest hundred.
+            user_count = round(run_time, -2)
+            return (user_count, spawn_rate)
 
-#         return None
+        return None
