@@ -44,32 +44,32 @@ class MetricsTaskSet(TaskSet):
 
 
 class QuickstartUser(HttpUser):
-    # wait_time = between(1, 5)
+    wait_time = 0
     tasks = [MetricsTaskSet]
 
-    @task(1)
-    def login(self):
-        self.client.post(
-            '/login', {"deviceid": self._deviceid})
+    # @task(1)
+    # def login(self):
+    #     self.client.post(
+    #         '/login', {"deviceid": self._deviceid})
 
-    @task(999)
-    def post_metrics(self):
-        self.client.post(
-            "/metrics", {"deviceid": self._deviceid, "timestamp": datetime.now()})
+    # @task(999)
+    # def post_metrics(self):
+    #     self.client.post(
+    #         "/metrics", {"deviceid": self._deviceid, "timestamp": datetime.now()})
 
-    def on_start(self):
-        pass
+    # def on_start(self):
+    #     pass
 
-class MyCustomShape(LoadTestShape):
-    time_limit = 10
-    spawn_rate = 1
+# class MyCustomShape(LoadTestShape):
+#     time_limit = 60
+#     spawn_rate = 10
 
-    def tick(self):
-        run_time = self.get_run_time()
+#     def tick(self):
+#         run_time = self.get_run_time()
 
-        if run_time < self.time_limit:
-            # User count rounded to nearest hundred.
-            user_count = round(run_time, -2)
-            return (user_count, spawn_rate)
+#         if run_time < self.time_limit:
+#             # User count rounded to nearest hundred.
+#             user_count = round(run_time, -2)
+#             return (user_count, spawn_rate)
 
-        return None
+#         return None
