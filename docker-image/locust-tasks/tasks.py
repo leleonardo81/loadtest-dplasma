@@ -44,7 +44,8 @@ class MetricsTaskSet(TaskSet):
 
 
 class TestUser(HttpUser):
-    wait_time = 0
+    def wait_time(self):
+        return 0
     tasks = [MetricsTaskSet]
 
     # @task(1)
@@ -61,7 +62,7 @@ class TestUser(HttpUser):
     #     pass
 
 class MyCustomShape(LoadTestShape):
-    time_limit = 60
+    time_limit = 600
     spawn_rate = 10
 
     def tick(self):
@@ -70,6 +71,7 @@ class MyCustomShape(LoadTestShape):
         if run_time < self.time_limit:
             # User count rounded to nearest hundred.
             user_count = round(run_time, -2)
+            print("runtime {}\n".format(run_time))
             return (user_count, 10)
 
         return None
