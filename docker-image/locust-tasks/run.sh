@@ -26,7 +26,7 @@
 # fi
 
 LOCUST="/usr/local/bin/locust"
-LOCUS_OPTS="-f /locust-tasks/tasks.py"
+LOCUS_OPTS="-f /locust-tasks/tasks.py  --csv=test --csv-full-history"
 LOCUST_MODE=${LOCUST_MODE:-standalone}
 
 if [[ "$LOCUST_MODE" = "master" ]]; then
