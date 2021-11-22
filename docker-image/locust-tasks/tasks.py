@@ -137,15 +137,15 @@ class MyCustomShape(LoadTestShape):
         return None
 
     # scalability
-    def tick(self):
-        run_time = self.get_run_time()
-        phase = math.ceil(run_time-30.0 / self.time_limit)
-        user_count = (phase**2) * 100
+    # def tick(self):
+    #     run_time = self.get_run_time()
+    #     phase = math.ceil(run_time-30.0 / self.time_limit)
+    #     user_count = (phase**2) * 100
 
-        if user_count - self.max_user <= 0:
-            return (user_count, self.spawn_rate)
+    #     if user_count - self.max_user <= 0:
+    #         return (user_count, self.spawn_rate)
 
-        if user_count - self.stopwhen <= 0 :
-            return (self.max_user, self.spawn_rate)
+    #     if user_count - self.stopwhen <= 0 :
+    #         return (self.max_user, self.spawn_rate)
 
-        return None
+    #     return None
