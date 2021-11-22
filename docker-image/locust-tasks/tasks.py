@@ -67,7 +67,7 @@ class DplasmaTaskSet(TaskSet):
             'status': 'active',
             'bloodtype': random.choice(['A', 'B', 'O', 'AB']),
             'age': random.randint(12, 80),
-            'description': "Created From Test rsid= {}".format(picked_rs['rsid'])
+            'description': "Donor request Created From Test {}".format(random.randint(0,1000))
         }
 
         self.client.post('/donor-request', req_body, headers=self._headers)
@@ -81,11 +81,11 @@ class DplasmaTaskSet(TaskSet):
     @task(1)
     def createRS(self):
         body = {
-            "name": "RS BOT"+random.randint(0,1000),
+            "name": "RS BOT "+random.randint(0,1000),
             "address": {
                 "lat": "-6.2088",
                 "lng": "106.8456",
-                "detail": "Jl. Virtual gatau dimana tolong"
+                "detail": "Jl. Virtual rumah sakit, jakarta barat"
             }
         }
         self.client.post('/rumah-sakit', body)
@@ -112,7 +112,7 @@ class DplasmaTaskSet(TaskSet):
 
 class TestUser(HttpUser):
     def wait_time(self):
-        mean = 7
+        mean = 13.02
         L = math.exp(-mean)
         p = random.random()
         k = 0
@@ -123,23 +123,29 @@ class TestUser(HttpUser):
     tasks = [DplasmaTaskSet]
 
 class MyCustomShape(LoadTestShape):
-    time_limit = 60
     spawn_rate = 10
-
+    time_limit = 90
+    max_phase = 8
+    max_user = (max_phase**2)*100
+    stopwhen = ((max_phase+1)**2)*100
+    
+    # base performance
     def tick(self):
         run_time = self.get_run_time()
-        if run_time < self.time_limit:
+        if run_time < self.time_limit*3:
             return (1, self.spawn_rate)
         return None
 
+    # scalability
+    def tick(self):
+        run_time = self.get_run_time()
+        phase = math.ceil(run_time-30.0 / self.time_limit)
+        user_count = (phase**2) * 100
 
-    # def tick(self):
-    #     run_time = self.get_run_time()
+        if user_count - self.max_user <= 0:
+            return (user_count, self.spawn_rate)
 
-    #     if run_time < self.time_limit:
-    #         # User count rounded to nearest hundred.
-    #         user_count = round(run_time, -2)
-    #         print("runtime {}\n".format(run_time))
-    #         return (user_count, 10)
+        if user_count - self.stopwhen <= 0 :
+            return (self.max_user, self.spawn_rate)
 
-    #     return None
+        return None
