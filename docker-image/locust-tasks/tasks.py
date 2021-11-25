@@ -26,7 +26,7 @@ from locust import HttpUser, task, between, TaskSet, LoadTestShape
 class DplasmaTaskSet(TaskSet):
     _deviceid = None
     _today = date.today()
-    _token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1NWUyOTRlZWRjMTY3Y2Q5N2JiNWE4MTliYmY3OTA2MzZmMTIzN2UiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGEtbGVvbmFyZG8iLCJhdWQiOiJ0YS1sZW9uYXJkbyIsImF1dGhfdGltZSI6MTYzNjcxMTk1MSwidXNlcl9pZCI6Im9zbm45UzlOZHBnVm9KZ1A3bFV0QVprRXFLMjMiLCJzdWIiOiJvc25uOVM5TmRwZ1ZvSmdQN2xVdEFaa0VxSzIzIiwiaWF0IjoxNjM2NzExOTUxLCJleHAiOjE2MzY3MTU1NTEsImVtYWlsIjoibGVvbmFyZG84MUB1aS5hYy5pZCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJsZW9uYXJkbzgxQHVpLmFjLmlkIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.D-eSVoBRup9fwtWevN9OUsRp29fcr2rikdGvaQvwnL_aVp7i81KpuUKPXKg3J9YLoGhDxi2oqK-fsSUXBLH4DzIG7CAibxVZIzma8_Xh42y93HyaCCwtkJLQu_38jt6F_ZGvMfUmsRBeJDuop6iFSuhEwWz03wIp7lazhKSB0OmC29alZ7z22fsoVAUZmhCBJS8tGN1bl5TMyOSC2BrKBVN3yqaPOaOGmf_aSWnNHy5SO9THW2JJqznfxsvanWsblSSI7liDtbBgvuOMtRdEvpCWFPrSyva0-gzf0MRqCvJ83dR21w2_ljR95gaoLGDFfvsxvS0f9-1Ln3UW_dIydA"
+    _token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjJlMzZhMWNiZDBiMjE2NjYxOTViZGIxZGZhMDFiNGNkYjAwNzg3OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbmV3LXRhLWxlb25hcmRvIiwiYXVkIjoibmV3LXRhLWxlb25hcmRvIiwiYXV0aF90aW1lIjoxNjM3NjU3MjM0LCJ1c2VyX2lkIjoiaDR4elZNOVFJTGNDb1JKOUlXWjZCYWRUOEtiMiIsInN1YiI6Img0eHpWTTlRSUxjQ29SSjlJV1o2QmFkVDhLYjIiLCJpYXQiOjE2Mzc2NTcyMzQsImV4cCI6MTYzNzY2MDgzNCwiZW1haWwiOiJsZW9uYXJkbzgxQHVpLmFjLmlkIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImxlb25hcmRvODFAdWkuYWMuaWQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.A8RI0Yx4a6n2zhgUkJgQ3Zb4L8jiXOlR58wDEDYhEitQXpL2x9JLmclHsVk_gIPXo6iyglguRgzoYGvj-ITGNV7MMqvdsdMminsqjM37RFAr5hbNDdR0esTLw6HUQTGQULbr5RFlNPolstHjIKMBnr_x9fcoBPSMfanNbefBiFvekIAzPQZ757tDg5LWc3NODdK_uCOi4OLiLbu6HJQOZ9XGZGhsgmvnaGAXw5WgBjVEtYsXrLwnu7Gge3BmX4T5XSF9qUfrLVGj8pY-IbIY9FUowTbOMLa65mBcBsjAMOR3vTis1fHEYBBwiJ--qSZUidX5oxY5qZNFl8ZWQxbXQQ"
     _headers = { 'Authorization': _token }
 
     def on_start(self):
@@ -38,15 +38,15 @@ class DplasmaTaskSet(TaskSet):
 
     @task(1)
     def login(self):
-        res = self.client.post('/login', {}, headers=self._headers)
+        res = self.client.post('/auth-login', {}, headers=self._headers)
         logging.info("/login")
         logging.info(res.text)
 
-    @task(2)
+    @task(5)
     def homepage(self):
         self.client.get('/donor-request')
 
-    @task(2)
+    @task(5)
     def donorRequestDetail(self):
         all_res = self.client.get('/donor-request')
         all_data = json.loads(all_res.text)['data']
@@ -72,25 +72,28 @@ class DplasmaTaskSet(TaskSet):
 
         self.client.post('/donor-request', req_body, headers=self._headers)
 
-    @task(10)
+    @task(5)
     def getRS(self):
         res = self.client.get('/rumah-sakit')
         logging.info("/rumah-sakit")
         logging.info(res.text)
 
-    @task(1)
+    @task(2)
     def createRS(self):
-        body = {
-            "name": "RS BOT "+random.randint(0,1000),
-            "address": {
-                "lat": "-6.2088",
-                "lng": "106.8456",
-                "detail": "Jl. Virtual rumah sakit, jakarta barat"
-            }
+        address = {
+            "lat": "-6.2088",
+            "lng": "106.8456",
+            "detail": "Jl. Virtual rumah sakit, jakarta barat"
         }
+        body = {
+            "name": "RS BOT {}".format(random.randint(0,1000)),
+            "address": json.dumps(address)
+        }
+        # json.dumps(body)
         self.client.post('/rumah-sakit', body)
-        
-    @task(1)
+        logging.info(body)
+
+    @task(5)
     def assesment(self):  
         body = {
             "negative_covid": random.choice([True, False]),
@@ -132,7 +135,7 @@ class MyCustomShape(LoadTestShape):
     # base performance
     def tick(self):
         run_time = self.get_run_time()
-        if run_time < self.time_limit*3:
+        if run_time < self.time_limit*8:
             return (1, self.spawn_rate)
         return None
 

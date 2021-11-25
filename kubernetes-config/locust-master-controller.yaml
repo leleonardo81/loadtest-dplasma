@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: locust-master
-          image: gcr.io/[PROJECT_ID]/locust-tasks:latest
+          image: gcr.io/fourth-groove-322502/locust-tasks:latest
           env:
             - name: LOCUST_MODE
               value: master
