@@ -26,7 +26,7 @@ from locust import HttpUser, task, between, TaskSet, LoadTestShape
 class DplasmaTaskSet(TaskSet):
     _deviceid = None
     _today = date.today()
-    _token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjJlMzZhMWNiZDBiMjE2NjYxOTViZGIxZGZhMDFiNGNkYjAwNzg3OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbmV3LXRhLWxlb25hcmRvIiwiYXVkIjoibmV3LXRhLWxlb25hcmRvIiwiYXV0aF90aW1lIjoxNjM3NjU3MjM0LCJ1c2VyX2lkIjoiaDR4elZNOVFJTGNDb1JKOUlXWjZCYWRUOEtiMiIsInN1YiI6Img0eHpWTTlRSUxjQ29SSjlJV1o2QmFkVDhLYjIiLCJpYXQiOjE2Mzc2NTcyMzQsImV4cCI6MTYzNzY2MDgzNCwiZW1haWwiOiJsZW9uYXJkbzgxQHVpLmFjLmlkIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImxlb25hcmRvODFAdWkuYWMuaWQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.A8RI0Yx4a6n2zhgUkJgQ3Zb4L8jiXOlR58wDEDYhEitQXpL2x9JLmclHsVk_gIPXo6iyglguRgzoYGvj-ITGNV7MMqvdsdMminsqjM37RFAr5hbNDdR0esTLw6HUQTGQULbr5RFlNPolstHjIKMBnr_x9fcoBPSMfanNbefBiFvekIAzPQZ757tDg5LWc3NODdK_uCOi4OLiLbu6HJQOZ9XGZGhsgmvnaGAXw5WgBjVEtYsXrLwnu7Gge3BmX4T5XSF9qUfrLVGj8pY-IbIY9FUowTbOMLa65mBcBsjAMOR3vTis1fHEYBBwiJ--qSZUidX5oxY5qZNFl8ZWQxbXQQ"
+    _token = "<____TOKEN___>"
     _headers = { 'Authorization': _token }
 
     def on_start(self):
@@ -53,7 +53,6 @@ class DplasmaTaskSet(TaskSet):
         picked_donor = random.choice(all_data)
         logging.info('Request Detail')
         logging.info(picked_donor['id'])
-
         self.client.get('/donor-request/'+picked_donor['id'], name="/donor-request/[id]")
 
     @task(2)
@@ -61,7 +60,6 @@ class DplasmaTaskSet(TaskSet):
         all_rs = self.client.get('/rumah-sakit')
         list_rs = json.loads(all_rs.text)['data']['rows']
         picked_rs = random.choice(list_rs)
-
         req_body = {
             'rsid': picked_rs['rsid'],
             'status': 'active',
@@ -69,7 +67,6 @@ class DplasmaTaskSet(TaskSet):
             'age': random.randint(12, 80),
             'description': "Donor request Created From Test {}".format(random.randint(0,1000))
         }
-
         self.client.post('/donor-request', req_body, headers=self._headers)
 
     @task(5)
@@ -133,22 +130,22 @@ class MyCustomShape(LoadTestShape):
     stopwhen = ((max_phase+1)**2)*100
     
     # base performance
-    def tick(self):
-        run_time = self.get_run_time()
-        if run_time < self.time_limit*8:
-            return (1, self.spawn_rate)
-        return None
-
-    # scalability
     # def tick(self):
     #     run_time = self.get_run_time()
-    #     phase = math.ceil(run_time-30.0 / self.time_limit)
-    #     user_count = (phase**2) * 100
-
-    #     if user_count - self.max_user <= 0:
-    #         return (user_count, self.spawn_rate)
-
-    #     if user_count - self.stopwhen <= 0 :
-    #         return (self.max_user, self.spawn_rate)
-
+    #     if run_time < self.time_limit*8:
+    #         return (1, self.spawn_rate)
     #     return None
+
+    # scalability
+    def tick(self):
+        run_time = self.get_run_time()
+        phase = math.ceil(run_time / self.time_limit)
+        user_count = (phase**2) * 100
+
+        if user_count - self.max_user <= 0:
+            return (user_count, self.spawn_rate)
+
+        if user_count - self.stopwhen <= 0 :
+            return (self.max_user, self.spawn_rate)
+
+        return None
